@@ -1,0 +1,99 @@
+spring:
+  #thymeleaf配置
+  thymeleaf:
+    #关闭缓存
+    cache: false
+  #数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      #初始化大小
+      initial-size: 5
+      #最多支持多少个活动会话
+      max-active: 50
+      #最小连接个数
+      min-idle: 1
+      #配置获取连接等待超时的时间，单位是毫秒
+      max-wait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置一个连接池最小的生存时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      # 用来检测连接是否有效的sql，要求是一个查询语句。
+      # 如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用
+      validation-query: SELECT 1
+      # 建议配置为true，不影响性能，并且保证安全性。
+      # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-return: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 通过别名的方式配置扩展插件，多个英文逗号分隔，常用的插件有：
+      #监控统计用的filter:stat
+      # 日志用的filter:log4j
+      # 防御sql注入的filter:wall
+      #如果没有配置日志，就不要写log4j，如果使用的是slf4j，把log4j改成slf4j
+      filters: stat,wall
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true
+
+  rabbitmq:
+    host: 192.168.217.4
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        #消费者最小数量
+        concurrency: 10
+        #消费者最大数量
+        max-concurrency: 10
+        #限制消费者每次只处理一条消息，处理完再继续下一条消息
+        prefetch: 1
+        #被拒绝时重新进入队列
+        default-requeue-rejected: true
+    template:
+      retry:
+        #发布充实，默认false
+        enabled: true
+        #重试时间，默认1000ms
+        initial-interval: 1000ms
+        #重试最大次数，默认3
+        max-attempts: 3
+        #重试最大间隔时间，默认10000ms
+        max-interval: 1000ms
+        #重试的间隔乘数你
+        multiplier: 1
+
+  redis:
+    port: 6379
+    host: 192.168.217.4
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 10000ms
+
+#Mybatis-plus配置
+mybatis-plus:
+  # 配置Mapper.xml文件
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  #配置Mybatis数据返回类型名
+  type-aliases-package: com.xxx.seckill.pojo
+
+#Mybatis SQL打印
+logging:
+  level:
+    com.xxx.seckill.mapper: debug
+
